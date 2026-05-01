@@ -8,8 +8,7 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-# Updated: Standard install without BuildKit cache to avoid the Step 8/14 error
-
+# Fix: Use --shamefully-hoist to resolve @replit/vite-plugin-cartographer issues
 RUN pnpm install --no-frozen-lockfile --shamefully-hoist
 
 # Build the specific dashboard project
