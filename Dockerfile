@@ -8,7 +8,8 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-# Fix: Use --shamefully-hoist to resolve @replit/vite-plugin-cartographer issues
+# NEW: This forces pnpm to resolve versions directly and ignores the "catalog:" protocol
+RUN pnpm config set resolution-mode highest
 RUN pnpm install --no-frozen-lockfile --shamefully-hoist
 
 # Build the specific dashboard project
