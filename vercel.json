@@ -1,0 +1,6 @@
+{
+  "installCommand": "cd ../.. && pnpm install --no-frozen-lockfile --ignore-scripts",
+  "buildCommand": "cd ../.. && pnpm --filter @workspace/runner-dashboard build",
+  "outputDirectory": "dist",
+  "framework": "vite"
+}
