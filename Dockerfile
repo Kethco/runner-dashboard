@@ -1,28 +1,18 @@
-# Stage 1: Build the application
+# Stage 1: Build
 FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@9.1.0 --activate
 
 FROM base AS build
-COPY . /usr/src/app
 WORKDIR /usr/src/app
-
-# NEW: This forces pnpm to resolve versions directly and ignores the "catalog:" protocol
-RUN pnpm config set resolution-mode highest
+COPY . .
 RUN pnpm install --no-frozen-lockfile --shamefully-hoist
+RUN pnpm run build
 
-# Build the specific dashboard project
-RUN pnpm --filter runner-dashboard build
-
-# Stage 2: Serve the application using Nginx
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
-# Copy the build output to the Nginx html folder
-COPY --from=build /usr/src/app/artifacts/runner-dashboard/dist /usr/share/nginx/html
-
-# Expose port 8080 (Cloud Run's default)
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 EXPOSE 8080
-# Configure Nginx to listen on 8080
 RUN sed -i 's/listen\(.*\)80;/listen 8080;/' /etc/nginx/conf.d/default.conf
-
 CMD ["nginx", "-g", "daemon off;"]
