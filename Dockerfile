@@ -7,6 +7,9 @@ RUN corepack enable && corepack prepare pnpm@9.1.0 --activate
 FROM base AS build
 WORKDIR /usr/src/app
 COPY . .
+# Add these lines before COPY . .
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
 RUN pnpm install --no-frozen-lockfile --shamefully-hoist
 RUN pnpm run build
 
