@@ -8,8 +8,8 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-# Install dependencies using the workspace setup
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
+# Updated: Standard install without BuildKit cache to avoid the Step 8/14 error
+RUN pnpm install --no-frozen-lockfile
 
 # Build the specific dashboard project
 RUN pnpm --filter runner-dashboard build
